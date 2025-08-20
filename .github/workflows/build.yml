@@ -1,0 +1,122 @@
+name: CI
+
+on:
+  workflow_call:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - runs-on: windows-latest
+            arch: amd64
+            msvc_arch: amd64
+
+          - runs-on: windows-11-arm
+            arch: arm64
+            msvc_arch: amd64_arm64
+
+    env:
+      ARCH: ${{ matrix.arch }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: ${{ matrix.msvc_arch }}
+
+      - name: Install wget
+        run: choco install wget
+
+      - name: Build
+        shell: bash
+        run: |
+          chmod a+x ./windows/build.sh
+          ./windows/build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-${{ matrix.arch }}
+          path: artifacts/*
+
+  android:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        shell: bash
+        run: |
+          chmod a+x ./android/build.sh
+          ./android/build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: artifacts/*
+
+  unix:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # - platform: solaris
+          - platform: freebsd
+          - platform: linux
+
+    env:
+      PLATFORM: ${{ matrix.platform }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build (Solaris)
+        if: matrix.platform == 'solaris'
+        uses: vmactions/solaris-vm@v1.1.4
+        with:
+          release: "11.4-gcc"
+          usesh: true
+          envs: 'PLATFORM GITHUB_WORKSPACE'
+          prepare: |
+            pkgutil -y -i wget
+            pkgutil -U -y tar
+
+          run: |
+            chmod a+x ./unix/build.sh
+            ./unix/build.sh
+
+      - name: Build (FreeBSD)
+        if: matrix.platform == 'freebsd'
+        uses: vmactions/freebsd-vm@v1.2.2
+        with:
+          usesh: true
+          envs: 'PLATFORM GITHUB_WORKSPACE'
+          prepare: |
+            pkg install -y bash wget
+
+          run: |
+            chmod a+x ./unix/build.sh ./unix/freebsd-deps.sh
+            bash unix/freebsd-deps.sh
+            bash unix/build.sh
+
+      - name: Build (Linux)
+        if: matrix.platform == 'linux'
+        run: |
+          chmod a+x ./unix/build.sh ./unix/linux-deps.sh
+          ./unix/linux-deps.sh
+          ./unix/build.sh
+
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.platform }}
+          path: artifacts/*

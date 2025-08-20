@@ -1,0 +1,5 @@
+build
+out
+artifacts
+SDL2*.tar.gz
+changelog.md
