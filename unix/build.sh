@@ -48,6 +48,11 @@ copy_build_artifacts() {
     mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
 }
 
+copy_cmake() {
+    cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
+    cp $ROOTDIR/unix/sdl2.cmake "$OUT_DIR"
+}
+
 package() {
     echo "Packaging..."
     mkdir -p "$ROOTDIR/artifacts"
@@ -87,6 +92,8 @@ mkdir -p "$OUT_DIR" || exit 1
 
 build
 copy_build_artifacts
+copy_cmake
+
 strip_libs
 
 package
