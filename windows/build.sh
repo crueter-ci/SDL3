@@ -24,8 +24,6 @@ configure() {
     #         ;;
     # esac
 
-    patch -p1 < $ROOTDIR/windows/0001-fix-arm.patch
-
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
         -DSDL_TEST=OFF \
@@ -98,11 +96,8 @@ ROOTDIR=$PWD
 mkdir -p "$BUILD_DIR"
 pushd "$BUILD_DIR"
 
-echo "Extracting $PRETTY_NAME $VERSION"
-rm -fr $DIRECTORY
-tar xf "$ROOTDIR/$ARTIFACT"
+extract
 
-mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
 pushd "$FILENAME-$VERSION-$ARCH"
 
 configure

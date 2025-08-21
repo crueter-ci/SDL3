@@ -33,5 +33,5 @@ artifact "Windows (amd64)" windows-amd64
 artifact "Windows (arm64)" windows-arm64
 artifact Linux linux
 artifact "Linux (aarch64)" linux-aarch64
-# artifact Solaris solaris
+artifact Solaris solaris
 artifact FreeBSD freebsd
