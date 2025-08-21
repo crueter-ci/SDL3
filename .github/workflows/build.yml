@@ -89,6 +89,7 @@ jobs:
 
     env:
       PLATFORM: ${{ matrix.platform }}
+      ARCH: ${{ matrix.arch }}
 
     steps:
       - uses: actions/checkout@v4
