@@ -69,3 +69,5 @@ Windows only builds static libraries, and will always be linked as such.
 Unix builds are tested on Linux, FreeBSD, and Solaris (gcc64), and should "just work" out of the box. To change your platform (only affects the artifact name), set the `PLATFORM` environment variable.
 
 Unix builds both shared and static libraries by default. You can control this with the `BUILD_SHARED_LIBS` CMake variable.
+
+Currently, only Linux supports aarch64 builds, though FreeBSD should work in theory.
