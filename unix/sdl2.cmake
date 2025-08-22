@@ -21,6 +21,10 @@ endif()
 
 add_library(SDL2::SDL2 ALIAS SDL2)
 
+if (CMAKE_SYSTEM_NAME MATCHES ".*FreeBSD.*")
+    target_link_libraries(SDL2 PRIVATE usbhid inotify)
+endif()
+
 function(link_sdl2)
     foreach(TARGET ${ARGN})
         if (TARGET ${TARGET})
