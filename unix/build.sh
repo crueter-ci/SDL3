@@ -17,6 +17,8 @@
 configure() {
     log_file=$1
 
+    sed -i 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt
+
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
         -DSDL_TEST=OFF \
