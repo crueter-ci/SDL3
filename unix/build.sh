@@ -7,8 +7,8 @@
 [ -z "$BUILD_DIR" ] && BUILD_DIR=build
 [ -z "$PLATFORM" ] && PLATFORM=linux
 
-[ "$PLATFORM" == "solaris" ] && MAKE=gmake || MAKE=make
 [ "$ARCH" != "amd64" ] && PLATFORM=$PLATFORM-$ARCH
+[ "$PLATFORM" == "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_PIPEWIRE=OFF -DSDL_DBUS=OFF -DSDL_LIBUDEV=OFF -DSDL_OSS=ON -DSDL_X11=ON -DSDL_WAYLAND=OFF -DTHREADS_PREFER_PTHREAD_FLAG=ON)
 
 configure() {
     log_file=$1
@@ -20,10 +20,12 @@ configure() {
         -DSDL2_DISABLE_INSTALL=OFF \
         -DSDL2_DISABLE_SDL2MAIN=ON \
         -DCMAKE_INSTALL_PREFIX="$OUT_DIR" \
+        -DCMAKE_INSTALL_LIBDIR=lib \
         -DSDL_SHARED=ON \
         -DSDL_STATIC=ON \
         -G "Ninja" \
-        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_BUILD_TYPE=Release \
+        "${EXTRA_CMAKE_FLAGS[@]}"
 }
 
 build() {
@@ -41,7 +43,6 @@ copy_build_artifacts() {
     cmake --install $BUILD_DIR
 
     echo "Cleaning..."
-    mv "$OUT_DIR/lib64" "$OUT_DIR/lib"
     rm -rf "$OUT_DIR/bin"
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/lib/pkgconfig

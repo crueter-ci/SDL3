@@ -1,8 +1,6 @@
-# CI Template
+# SDL2 CI
 
-Scripts and CI for CMake-compatible SDL2 on Windows (amd64, arm64), UNIX (amd64, FreeBSD, Linux) and Android (aarch64).
-
-Solaris, and UNIX/aarch64 builds will come soon.
+Scripts and CI for CMake-compatible SDL2 on Windows (amd64, arm64), UNIX/amd64 (FreeBSD, Linux, Solaris), UNIX/aarch64 (Linux) and Android (aarch64).
 
 [**Releases**](https://github.com/crueter-ci/SDL2/releases)
 
