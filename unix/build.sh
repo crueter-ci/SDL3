@@ -7,9 +7,12 @@
 [ -z "$BUILD_DIR" ] && BUILD_DIR=build
 [ -z "$PLATFORM" ] && PLATFORM=linux
 
-[ "$ARCH" != "amd64" ] && PLATFORM=$PLATFORM-$ARCH
 [ "$PLATFORM" == "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_PIPEWIRE=OFF -DSDL_DBUS=OFF -DSDL_LIBUDEV=OFF -DSDL_OSS=ON -DSDL_X11=ON -DSDL_WAYLAND=OFF -DTHREADS_PREFER_PTHREAD_FLAG=ON)
-[ "$PLATFORM" == "solaris" ] && EXTRA_CMAKE_FLAGS=(-DPKG_CONFIG_PATH=/usr/lib/64/pkgconfig)
+[ "$PLATFORM" == "solaris" ] && export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig
+
+[ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS=("${EXTRA_CMAKE_FLAGS[@]}" -DSDL_IBUS=OFF)
+
+[ "$ARCH" != "amd64" ] && PLATFORM=$PLATFORM-$ARCH
 
 configure() {
     log_file=$1
@@ -47,7 +50,9 @@ copy_build_artifacts() {
     rm -rf "$OUT_DIR/bin"
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/lib/pkgconfig
-    find "$OUT_DIR/lib" -maxdepth 1 -type l -exec rm {} \;
+    rm -rf "$OUT_DIR"/libdata
+    rm -rf "$OUT_DIR"/share
+    find "$OUT_DIR/lib" -type l -exec rm {} \;
     mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
 }
 
