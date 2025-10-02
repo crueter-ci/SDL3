@@ -76,6 +76,9 @@ jobs:
           - runs-on: ubuntu-24.04-arm
             arch: aarch64
 
+    env:
+      ARCH: ${{ matrix.arch }}
+
     steps:
       - uses: actions/checkout@v4
 
@@ -141,7 +144,7 @@ jobs:
 
       - name: Build (FreeBSD)
         if: matrix.platform == 'freebsd'
-        uses: vmactions/freebsd-vm@v1.2.2
+        uses: vmactions/freebsd-vm@v1
         with:
           arch: ${{ matrix.vm-arch }}
           usesh: true
