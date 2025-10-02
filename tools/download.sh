@@ -6,9 +6,7 @@
 . tools/common.sh || exit 1
 
 # This shouldn't need to be changed unless the software is on GitLab or otherwise
-# DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
-
-DOWNLOAD_URL="https://github.com/libsdl-org/SDL/archive/1f21aae242.zip"
+DOWNLOAD_URL="https://github.com/$REPO/releases/download/$TAG/$ARTIFACT"
 
 while true; do
    if [ ! -f $ARTIFACT ]; then

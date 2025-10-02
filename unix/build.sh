@@ -1,18 +1,18 @@
 #!/bin/bash -e
 
+set -e
+
 . tools/common.sh || exit 1
 
-[ -z "$OUT_DIR" ] && OUT_DIR=$PWD/out
-[ -z "$ARCH" ] && ARCH=amd64
-[ -z "$BUILD_DIR" ] && BUILD_DIR=build
-[ -z "$PLATFORM" ] && PLATFORM=linux
+OUT_DIR=${OUT_DIR:-$PWD/out}
+ARCH=${ARCH:-amd64}
+BUILD_DIR=${BUILD_DIR:-build}
+PLATFORM=${PLATFORM:-linux}
 
-[ "$PLATFORM" == "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_OSS=ON -DSDL_X11=ON -DTHREADS_PREFER_PTHREAD_FLAG=ON)
-[ "$PLATFORM" == "solaris" ] && export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig
-
-[ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS=("${EXTRA_CMAKE_FLAGS[@]}" -DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF)
-
-[ "$ARCH" != "amd64" ] && PLATFORM=$PLATFORM-$ARCH
+[ "$PLATFORM" = "freebsd" ] && EXTRA_CMAKE_FLAGS=(-DSDL_ALSA=OFF -DSDL_PULSEAUDIO=OFF -DSDL_OSS=ON -DSDL_X11=ON -DTHREADS_PREFER_PTHREAD_FLAG=ON)
+[ "$PLATFORM" = "openbsd" ] && EXTRA_CMAKE_FLAGS=(-DCMAKE_C_FLAGS="-L/usr/local/lib")
+[ "$PLATFORM" = "solaris" ] && export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig
+[ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS+=(-DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF)
 
 configure() {
     log_file=$1
@@ -61,14 +61,13 @@ copy_build_artifacts() {
 
 copy_cmake() {
     cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
-    cp $ROOTDIR/unix/sdl2.cmake "$OUT_DIR"
 }
 
 package() {
     echo "Packaging..."
     mkdir -p "$ROOTDIR/artifacts"
 
-    TARBALL=$FILENAME-$PLATFORM-$VERSION.tar
+    TARBALL=$FILENAME-$PLATFORM-$ARCH-$VERSION.tar
 
     cd "$OUT_DIR"
     tar cf $ROOTDIR/artifacts/$TARBALL *

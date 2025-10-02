@@ -1,16 +1,12 @@
-#!/bin/bash
-
-set -e
+#!/bin/bash -e
 
 . tools/common.sh || exit 1
 
-[ -z "$OUT_DIR" ] && OUT_DIR=$PWD/out
-
-# Android needs the NDK
 [ -z "$ANDROID_NDK_ROOT" ] && echo "You must supply the ANDROID_NDK_ROOT environment variable." && exit 1
-[ -z "$ARCH" ] && ARCH=arm64-v8a
-[ -z "$BUILD_DIR" ] && BUILD_DIR=build
-[ -z "$ANDROID_API" ] && ANDROID_API=23
+OUT_DIR=${OUT_DIR:-"$PWD/out"}
+ARCH=${ARCH:-arm64-v8a}
+BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
+ANDROID_API=${ANDROID_API:-23}
 
 build() {
     echo "Building..."
@@ -33,7 +29,6 @@ build() {
 }
 
 strip_libs() {
-    # Change to match your library's names
     find . -name "*.so" -exec llvm-strip --strip-all {} \;
 }
 
@@ -45,7 +40,6 @@ copy_build_artifacts() {
 
 copy_cmake() {
     cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
-    cp $ROOTDIR/unix/sdl2.cmake "$OUT_DIR"
 }
 
 package() {
@@ -72,12 +66,10 @@ ROOTDIR=$PWD
 mkdir -p "$BUILD_DIR"
 pushd "$BUILD_DIR"
 
-# You can change this for e.g. CMake
 extract
 
 pushd "$FILENAME-$VERSION-$ARCH"
 
-# Delete existing build artifacts
 rm -fr "$OUT_DIR"
 mkdir -p "$OUT_DIR" || exit 1
 

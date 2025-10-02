@@ -2,4 +2,5 @@ build
 out
 artifacts
 SDL*.zip
+SDL*.tar.gz
 changelog.md

@@ -4,25 +4,13 @@ set -e
 
 . tools/common.sh || exit 1
 
-[ -z "$OUT_DIR" ] && OUT_DIR="$PWD/out"
-[ -z "$ARCH" ] && ARCH=amd64
-[ -z "$BUILD_DIR" ] && BUILD_DIR="$PWD/build"
+OUT_DIR=${OUT_DIR:-"$PWD/out"}
+ARCH=${ARCH:-amd64}
+BUILD_DIR=${BUILD_DIR:-"$PWD/build"}
 
 configure() {
     # Configure here (e.g. cmake or the like)
     echo "Configuring $PRETTY_NAME..."
-
-    # case "$ARCH" in
-    #     (x86)
-    #         TARGET="Win32"
-    #         ;;
-    #     (amd64|x64|x86_64)
-    #         TARGET="x64"
-    #         ;;
-    #     (aarch64|arm|arm64)
-    #         TARGET="ARM64"
-    #         ;;
-    # esac
 
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
@@ -69,7 +57,6 @@ copy_build_artifacts() {
 
 copy_cmake() {
     cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
-    cp $ROOTDIR/windows/sdl2.cmake "$OUT_DIR"
 }
 
 package() {

@@ -16,7 +16,6 @@ if (ANDROID)
       URL https://github.com/crueter-ci/SDL2/releases/download/v2.32.8/sdl2-android-2.32.8.tar.zst
     )
     FetchContent_MakeAvailable(SDL2)
-    include(${SDL2_SOURCE_DIR}/sdl2.cmake)
 endif()
 ```
 
@@ -28,7 +27,6 @@ if (MSVC)
     NAME SDL2
     URL https://github.com/crueter-ci/SDL2/releases/download/v2.32.8/sdl2-windows-2.32.8.tar.zst
   )
-  include(${SDL2_SOURCE_DIR}/sdl2.cmake)
 endif()
 ```
 
@@ -43,6 +41,8 @@ Build scripts are located at `build.sh` in their relevant directory, e.g. `andro
 - `BUILD_DIR` (default `<PWD>/build`): The build directory to use
 - `OUT_DIR` (default `<PWD>/out`): The directory to output the include directory and built libraries
 - `ARCH` (default: amd64 on Windows/UNIX, arm64-v8a on Android): The architecture to build for
+
+All platforms build both shared and static libraries by default. You can control this with the `BUILD_SHARED_LIBS` CMake variable.
 
 ### Android
 
@@ -60,12 +60,8 @@ Android builds both shared and static libraries by default. You can control this
 
 Windows building is only tested on MSVC and on Windows only. MSYS2 and MinGW support is planned. Only amd64 is officially supported or distributed for the time being.
 
-Windows only builds static libraries, and will always be linked as such.
-
 ### Unix
 
 Unix builds are tested on Linux, FreeBSD, and Solaris (gcc64), and should "just work" out of the box. To change your platform (only affects the artifact name), set the `PLATFORM` environment variable.
-
-Unix builds both shared and static libraries by default. You can control this with the `BUILD_SHARED_LIBS` CMake variable.
 
 Currently, only Linux supports aarch64 builds, though FreeBSD should work in theory.

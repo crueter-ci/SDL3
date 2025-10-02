@@ -1,9 +1,9 @@
-#!/bin/sh
+#!/bin/sh -ex
 
 # Common variables (repo, artifact, etc) used by tools
 
 # Pinned here because sdl2 lol
-export VERSION="2.32.8"
+export VERSION="2.32.10"
 export PRETTY_NAME="SDL2"
 export FILENAME="SDL2"
 export REPO="libsdl-org/SDL"
@@ -16,6 +16,5 @@ extract() {
   rm -fr $DIRECTORY
   unzip "$ROOTDIR/$ARTIFACT"
 
-  mv SDL-* "$FILENAME-$VERSION"
   mv "$FILENAME-$VERSION" "$FILENAME-$VERSION-$ARCH"
 }
