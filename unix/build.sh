@@ -15,17 +15,14 @@ PLATFORM=${PLATFORM:-linux}
 [ "$PLATFORM" != "linux" ] && EXTRA_CMAKE_FLAGS+=(-DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF)
 
 configure() {
-    log_file=$1
-
+	echo "-- Configuring..."
     # thanks solaris
     sed 's/LINUX OR FREEBSD/LINUX/' CMakeLists.txt > cmake.tmp && mv cmake.tmp CMakeLists.txt
 
     cmake -S . -B "$BUILD_DIR" \
         -DSDL_WERROR=OFF \
-        -DSDL_TEST=OFF \
+        -DSDL_TEST_LIBRARY=OFF \
         -DSDL_VENDOR_INFO="crueter's CI" \
-        -DSDL2_DISABLE_INSTALL=OFF \
-        -DSDL2_DISABLE_SDL2MAIN=ON \
         -DCMAKE_INSTALL_PREFIX="$OUT_DIR" \
         -DCMAKE_INSTALL_LIBDIR=lib \
         -DSDL_SHARED=ON \
@@ -36,9 +33,9 @@ configure() {
 }
 
 build() {
-    echo "Building..."
+    echo "-- Building..."
 
-    cmake --build $BUILD_DIR --config Release --parallel
+    cmake --build "$BUILD_DIR" --config Release --parallel
 }
 
 strip_libs() {
@@ -46,37 +43,36 @@ strip_libs() {
 }
 
 copy_build_artifacts() {
-    echo "Copying artifacts..."
-    cmake --install $BUILD_DIR
+    echo "-- Copying artifacts..."
+    cmake --install "$BUILD_DIR"
 
-    echo "Cleaning..."
-    rm -rf "$OUT_DIR/bin"
+    echo "-- Cleaning..."
+    rm -rf "${OUT_DIR:?}/bin"
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/lib/pkgconfig
-    rm -rf "$OUT_DIR"/libdata
     rm -rf "$OUT_DIR"/share
     find "$OUT_DIR/lib" -type l -exec rm {} \;
-    mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL2.so"
+    mv "$OUT_DIR/lib"/*.so* "$OUT_DIR/lib/libSDL3.so"
 }
 
 copy_cmake() {
-    cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
+    cp "$ROOTDIR"/CMakeLists.txt "$OUT_DIR"
 }
 
 package() {
-    echo "Packaging..."
+    echo "-- Packaging..."
     mkdir -p "$ROOTDIR/artifacts"
 
     TARBALL=$FILENAME-$PLATFORM-$ARCH-$VERSION.tar
 
     cd "$OUT_DIR"
-    tar cf $ROOTDIR/artifacts/$TARBALL *
+    tar cf "$ROOTDIR"/artifacts/"$TARBALL" *
 
     cd "$ROOTDIR/artifacts"
-    zstd -10 $TARBALL
-    rm $TARBALL
+    zstd -10 "$TARBALL"
+    rm "$TARBALL"
 
-    $ROOTDIR/tools/sums.sh $TARBALL.zst
+    "$ROOTDIR"/tools/sums.sh "$TARBALL".zst
 }
 
 ROOTDIR=$PWD
@@ -107,5 +103,5 @@ package
 
 echo "Done! Artifacts are in $ROOTDIR/artifacts, raw lib/include data is in $OUT_DIR"
 
-popd
-popd
+popd >/dev/null
+popd >/dev/null

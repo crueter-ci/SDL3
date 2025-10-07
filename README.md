@@ -1,8 +1,8 @@
-# SDL2 CI
+# SDL3 CI
 
-Scripts and CI for CMake-compatible SDL2 on Windows (amd64, arm64), UNIX/amd64 (FreeBSD, Linux, Solaris), UNIX/aarch64 (Linux) and Android (aarch64).
+Scripts and CI for CMake-compatible SDL3 on Windows (amd64, arm64), UNIX/amd64 (FreeBSD, Linux, Solaris), UNIX/aarch64 (Linux) and Android (aarch64).
 
-[**Releases**](https://github.com/crueter-ci/SDL2/releases)
+[**Releases**](https://github.com/crueter-ci/SDL3/releases)
 
 ## Usage
 
@@ -11,11 +11,11 @@ CMake is recommended. You can include it through `FetchContent`:
 ```cmake
 if (ANDROID)
     FetchContent_Declare(
-      SDL2
+      SDL3
       DOWNLOAD_EXTRACT_TIMESTAMP true
-      URL https://github.com/crueter-ci/SDL2/releases/download/v2.32.8/sdl2-android-2.32.8.tar.zst
+      URL https://github.com/crueter-ci/SDL3/releases/download/v2.32.8/SDL3-android-2.32.8.tar.zst
     )
-    FetchContent_MakeAvailable(SDL2)
+    FetchContent_MakeAvailable(SDL3)
 endif()
 ```
 
@@ -24,8 +24,8 @@ endif()
 ```cmake
 if (MSVC)
   CPMAddPackage(
-    NAME SDL2
-    URL https://github.com/crueter-ci/SDL2/releases/download/v2.32.8/sdl2-windows-2.32.8.tar.zst
+    NAME SDL3
+    URL https://github.com/crueter-ci/SDL3/releases/download/v2.32.8/SDL3-windows-2.32.8.tar.zst
   )
 endif()
 ```

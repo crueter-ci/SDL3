@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
-. tools/common.sh || exit 1
+# shellcheck disable=SC1091
+. tools/common.sh
 
 [ -z "$ANDROID_NDK_ROOT" ] && echo "You must supply the ANDROID_NDK_ROOT environment variable." && exit 1
 OUT_DIR=${OUT_DIR:-"$PWD/out"}
@@ -22,10 +23,8 @@ build() {
         fi
     done
 
-    sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ARCH/" build-scripts/androidbuildlibs.sh
-    sed -i 's/SDL2 SDL2_main/SDL2 SDL2_static/' build-scripts/androidbuildlibs.sh
-    sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
-    build-scripts/androidbuildlibs.sh -j$(nproc)
+    sed -i 's/SDL3/SDL3 SDL3_static/' build-scripts/androidbuildlibs.sh
+    build-scripts/androidbuildlibs.sh -j"$(nproc)" APP_PLATFORM="$ANDROID_API" APP_ABI="$ARCH"
 }
 
 strip_libs() {
@@ -34,12 +33,12 @@ strip_libs() {
 
 copy_build_artifacts() {
     mkdir "$OUT_DIR"/{lib,include}
-    cp build/android/obj/local/$ARCH/libSDL2* "$OUT_DIR"/lib
-    cp include/*.h "$OUT_DIR"/include
+    cp build/android/obj/local/"$ARCH"/libSDL3* "$OUT_DIR"/lib
+    cp -r include/SDL3 "$OUT_DIR"/include
 }
 
 copy_cmake() {
-    cp $ROOTDIR/CMakeLists.txt "$OUT_DIR"
+    cp "$ROOTDIR"/CMakeLists.txt "$OUT_DIR"
 }
 
 package() {

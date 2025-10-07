@@ -3,10 +3,11 @@
 # Generates a "changelog"/download utility table
 # Requires: echo
 
+# shellcheck disable=SC1091
 . tools/common.sh || exit 1
 
 # Change to the current repo
-BASE_DOWNLOAD_URL="https://github.com/crueter-ci/SDL2/releases/download"
+BASE_DOWNLOAD_URL="https://github.com/crueter-ci/SDL3/releases/download"
 TAG=v$VERSION
 
 artifact() {
@@ -15,10 +16,10 @@ artifact() {
 
   BASE_URL="${BASE_DOWNLOAD_URL}/${TAG}/${FILENAME}-${PLATFORM}-${VERSION}.tar.zst"
 
-  echo -n "| "
-  echo -n "[$NAME]($BASE_URL) | "
+  printf "| "
+  printf "[%s](%s) | " "$NAME" "$BASE_URL"
   for sum in 1 256 512; do
-    echo -n "[Download]($BASE_URL.sha${sum}sum) |"
+    printf "[Download](%s.sha%ssum) |" "$BASE_URL" "$sum"
   done
   echo
 }
