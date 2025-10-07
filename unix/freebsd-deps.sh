@@ -1,3 +1,5 @@
+#!/bin/sh -e
+
 pkg install -y wget cmake ninja pkgconf libXcursor libXext \
 	libXinerama libXi libXfixes libXrandr libXScrnSaver \
 	libXxf86vm wayland wayland-protocols libxkbcommon mesa-libs \

@@ -1,3 +1,5 @@
+#!/bin/sh -e
+
 # Explicitly disable man-db auto update (takes forever lol)
 sudo rm /var/lib/man-db/auto-update
 

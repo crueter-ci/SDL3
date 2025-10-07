@@ -2,6 +2,7 @@
 
 set -e
 
+# shellcheck disable=SC1091
 . tools/common.sh || exit 1
 
 OUT_DIR=${OUT_DIR:-$PWD/out}
