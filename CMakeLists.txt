@@ -24,7 +24,6 @@ if (UNIX)
     add_library(SDL3 ${LIB_TYPE} IMPORTED GLOBAL)
     set_target_properties(SDL3 PROPERTIES
         IMPORTED_LOCATION ${SDL3_LIB_DIR}/libSDL3.${LIB_SUFFIX}
-        INTERFACE_INCLUDE_DIRECTORIES ${SDL3_INCLUDE_DIR}
     )
 else()
     if (BUILD_SHARED_LIBS)
@@ -32,17 +31,19 @@ else()
         set_target_properties(SDL3 PROPERTIES
             IMPORTED_LOCATION ${SDL3_LIB_DIR}/libSDL3.dll
             IMPORTED_IMPLIB ${SDL3_LIB_DIR}/libSDL3.lib
-            INTERFACE_INCLUDE_DIRECTORIES ${SDL3_INCLUDE_DIR}
         )
     else()
         add_library(SDL3 STATIC IMPORTED GLOBAL)
         set_target_properties(SDL3 PROPERTIES IMPORTED_LOCATION
                               ${SDL3_LIB_DIR}/libSDL3_static.lib
-                              INTERFACE_INCLUDE_DIRECTORIES ${SDL3_INCLUDE_DIR}
                               INTERFACE_LINK_LIBRARIES
                               "\$<LINK_ONLY:kernel32>;\$<LINK_ONLY:user32>;\$<LINK_ONLY:gdi32>;\$<LINK_ONLY:winmm>;\$<LINK_ONLY:imm32>;\$<LINK_ONLY:ole32>;\$<LINK_ONLY:oleaut32>;\$<LINK_ONLY:version>;\$<LINK_ONLY:uuid>;\$<LINK_ONLY:advapi32>;\$<LINK_ONLY:setupapi>;\$<LINK_ONLY:shell32>;\$<LINK_ONLY:dinput8>;\$<LINK_ONLY:>")
     endif()
 endif()
+
+set_target_properties(SDL3 PROPERTIES
+    INTERFACE_INCLUDE_DIRECTORIES ${SDL3_INCLUDE_DIR}
+)
 
 add_library(SDL3::SDL3 ALIAS SDL3)
 
