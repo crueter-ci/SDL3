@@ -3,10 +3,10 @@
 ## Common variables ##
 
 # In some projects you will want to fetch latest from gh/fj api
-VERSION="2.32.10"
-export COMMIT="3c28e8ecc084eaca11cdc8a24026f1b2f8802697"
-export PRETTY_NAME="SDL2"
-export FILENAME="SDL2"
+VERSION="3.4.8"
+export COMMIT="d57c3b685c434d2ee0fa3d258f7e165b6e8d0cf6"
+export PRETTY_NAME="SDL3"
+export FILENAME="SDL3"
 export REPO="libsdl-org/SDL"
 export DIRECTORY="SDL-$COMMIT"
 export ARTIFACT="$COMMIT.tar.gz"

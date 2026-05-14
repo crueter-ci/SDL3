@@ -44,7 +44,7 @@ jobs:
         with:
           body_path: ./changelog.md
 
-          name: SDL2 ${{ env.VERSION }}
+          name: SDL3 ${{ env.VERSION }}
           tag_name: v${{ env.VERSION }}
           files: |
             */*.tar.zst*

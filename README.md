@@ -1,10 +1,10 @@
-# SDL2 CI
+# SDL3 CI
 
-Scripts and CI for SDL2.
+Scripts and CI for SDL3.
 
-- [**Releases**](https://github.com/crueter-ci/SDL2/releases)
+- [**Releases**](https://github.com/crueter-ci/SDL3/releases)
 - Shared libraries (`BUILD_SHARED_LIBS=ON`) are supported.
-- CMake target: `SDL2::SDL2`
+- CMake target: `SDL3::SDL3`
 
 ## Building and Usage
 

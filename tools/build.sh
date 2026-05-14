@@ -68,10 +68,8 @@ configure() {
 
 	cmake -S . -B "$BUILD_DIR" \
 		-DSDL_WERROR=OFF \
-		-DSDL_TEST=OFF \
+		-DSDL_TEST_LIBRARY=OFF \
 		-DSDL_VENDOR_INFO="crueter's CI" \
-		-DSDL2_DISABLE_INSTALL=OFF \
-		-DSDL2_DISABLE_SDL2MAIN=ON \
 		-DCMAKE_INSTALL_PREFIX="$OUT_DIR" \
 		-DSDL_SHARED=ON \
 		-DSDL_STATIC=ON \
@@ -89,7 +87,7 @@ build() {
 		android_paths
 
 		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ABI/" build-scripts/androidbuildlibs.sh
-		sed -i 's/SDL2 SDL2_main/SDL2 SDL2_static/' build-scripts/androidbuildlibs.sh
+		sed -i 's/SDL3 SDL3_main/SDL3 SDL3_static/' build-scripts/androidbuildlibs.sh
 		sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
 		build-scripts/androidbuildlibs.sh -j"$(num_procs)"
 	else
@@ -113,7 +111,7 @@ copy_build_artifacts() {
 
 	if android; then
 	    mkdir "$OUT_DIR"/lib "$OUT_DIR"/include
-		cp "build/android/obj/local/$ABI"/libSDL2* "$OUT_DIR"/lib
+		cp "build/android/obj/local/$ABI"/libSDL3* "$OUT_DIR"/lib
 		cp include/*.h "$OUT_DIR"/include
 		return
 	fi
@@ -127,20 +125,20 @@ copy_build_artifacts() {
 
 	case "$PLATFORM" in
 		windows|mingw)
-			mv "$OUT_DIR"/bin/SDL2.dll "$OUT_DIR"/lib/libSDL2.dll
+			mv "$OUT_DIR"/bin/SDL3.dll "$OUT_DIR"/lib/libSDL3.dll
 			if ! command -v clang-cl >/dev/null 2>&1; then
-				mv "$OUT_DIR"/lib/libSDL2.a "$OUT_DIR"/lib/libSDL2_static.lib
-				mv "$OUT_DIR"/lib/libSDL2.dll.a "$OUT_DIR"/lib/libSDL2.lib
+				mv "$OUT_DIR"/lib/libSDL3.a "$OUT_DIR"/lib/libSDL3_static.lib
+				mv "$OUT_DIR"/lib/libSDL3.dll.a "$OUT_DIR"/lib/libSDL3.lib
 			else
-				mv "$OUT_DIR"/lib/SDL2.lib "$OUT_DIR"/lib/libSDL2.lib
-				mv "$OUT_DIR"/lib/SDL2-static.lib "$OUT_DIR"/lib/libSDL2_static.lib
+				mv "$OUT_DIR"/lib/SDL3.lib "$OUT_DIR"/lib/libSDL3.lib
+				mv "$OUT_DIR"/lib/SDL3-static.lib "$OUT_DIR"/lib/libSDL3_static.lib
 			fi
 			;;
 		*)
 			rm -rf "$OUT_DIR"/libdata
 			rm -rf "$OUT_DIR"/share
 			find "$OUT_DIR/lib" -type l -exec rm {} \;
-			mv "$OUT_DIR/lib"/*."${SHARED_SUFFIX}"* "$OUT_DIR/lib/libSDL2.${SHARED_SUFFIX}"
+			mv "$OUT_DIR/lib"/*."${SHARED_SUFFIX}"* "$OUT_DIR/lib/libSDL3.${SHARED_SUFFIX}"
 			;;
 	esac
 
