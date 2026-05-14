@@ -86,10 +86,10 @@ build() {
 
 		android_paths
 
-		sed -i "s/armeabi-v7a arm64-v8a x86 x86_64/$ABI/" build-scripts/androidbuildlibs.sh
-		sed -i 's/SDL3 SDL3_main/SDL3 SDL3_static/' build-scripts/androidbuildlibs.sh
-		sed -i "s/android-16/android-$ANDROID_API/" build-scripts/androidbuildlibs.sh
-		build-scripts/androidbuildlibs.sh -j"$(num_procs)"
+		sed -i 's/SDL3/SDL3 SDL3_static/' build-scripts/androidbuildlibs.sh
+
+		# TODO(crueter): Just use CMake
+		build-scripts/androidbuildlibs.sh -j"$(nproc)" APP_PLATFORM="$ANDROID_API" APP_ABI="$ABI"
 	else
 		cmake --build "$BUILD_DIR" --config Release --parallel
 	fi
@@ -112,7 +112,7 @@ copy_build_artifacts() {
 	if android; then
 	    mkdir "$OUT_DIR"/lib "$OUT_DIR"/include
 		cp "build/android/lib/$ABI"/libSDL3* "$OUT_DIR"/lib
-		cp include/*.h "$OUT_DIR"/include
+		cp -r include/SDL3 "$OUT_DIR"/include
 		return
 	fi
 
