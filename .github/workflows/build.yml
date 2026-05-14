@@ -33,6 +33,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v6
 
+      - name: Install zstd
+        if: matrix.platform == 'windows'
+        run: choco install zstandard
+
       - uses: ilammy/msvc-dev-cmd@v1
         if: matrix.platform == 'windows'
         with:
