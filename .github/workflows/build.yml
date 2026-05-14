@@ -5,12 +5,12 @@ on:
 
 jobs:
   windows:
-    name: "${{ matrix.platform }} ${{ matrix.arch }}"
-    runs-on: ${{ matrix.runs-on }}
+    name: "${{ matrix.platform }} ${{ matrix.os.arch }}"
+    runs-on: ${{ matrix.os.runs-on }}
     strategy:
       fail-fast: false
       matrix:
-        include:
+        os:
           - runs-on: windows-latest
             arch: amd64
             msystem: mingw64
@@ -22,7 +22,7 @@ jobs:
         platform: [windows, mingw]
 
     env:
-      ARCH: ${{ matrix.arch }}
+      ARCH: ${{ matrix.os.arch }}
       PLATFORM: ${{ matrix.platform }}
 
     defaults:
@@ -40,13 +40,13 @@ jobs:
       - uses: ilammy/msvc-dev-cmd@v1
         if: matrix.platform == 'windows'
         with:
-          arch: ${{ matrix.arch }}
+          arch: ${{ matrix.os.arch }}
 
       - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         if: matrix.platform == 'mingw'
         with:
-          msystem: ${{ matrix.msystem }}
+          msystem: ${{ matrix.os.msystem }}
           update: true
           install: >-
             git make unzip patch
@@ -59,7 +59,7 @@ jobs:
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: ${{ matrix.platform }}-${{ matrix.arch }}
+          name: ${{ matrix.platform }}-${{ matrix.os.arch }}
           path: artifacts/*
 
   android:
