@@ -5,44 +5,12 @@ on:
 
 jobs:
   windows:
-    runs-on: windows-latest
+    name: "${{ matrix.platform }} ${{ matrix.os.arch }}"
+    runs-on: ${{ matrix.os.runs-on }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - arch: amd64
-            msvc_arch: amd64
-
-          - arch: arm64
-            msvc_arch: amd64_arm64
-
-    env:
-      ARCH: ${{ matrix.arch }}
-
-    steps:
-      - uses: actions/checkout@v6
-
-      - uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.msvc_arch }}
-
-      - name: Build
-        shell: bash
-        run: PLATFORM=windows ./tools/build.sh
-
-      - name: Upload Artifacts
-        uses: actions/upload-artifact@v7
-        with:
-          name: windows-${{ matrix.arch }}
-          path: artifacts/*
-
-  msys:
-    name: "MinGW"
-    runs-on: ${{ matrix.runs-on }}
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
+        os:
           - runs-on: windows-latest
             arch: amd64
             msystem: mingw64
@@ -51,19 +19,34 @@ jobs:
             arch: arm64
             msystem: clangarm64
 
+        platform: [windows, mingw]
+
     env:
-      ARCH: ${{ matrix.arch }}
-      PLATFORM: mingw
+      ARCH: ${{ matrix.os.arch }}
+      PLATFORM: ${{ matrix.platform }}
+
+    defaults:
+      run:
+        shell: ${{ matrix.platform == 'mingw' && 'msys2 {0}' || 'bash' }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v6
 
-      - name: Setup MSYS2
-        id: msys2
-        uses: msys2/setup-msys2@v2
+      - name: Install zstd
+        if: matrix.platform == 'windows'
+        run: choco install zstandard
+
+      - uses: ilammy/msvc-dev-cmd@v1
+        if: matrix.platform == 'windows'
         with:
-          msystem: ${{ matrix.msystem }}
+          arch: ${{ matrix.os.arch }}
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        if: matrix.platform == 'mingw'
+        with:
+          msystem: ${{ matrix.os.msystem }}
           update: true
           install: >-
             git make unzip patch
@@ -71,13 +54,12 @@ jobs:
             cmake:p ninja:p toolchain:p
 
       - name: Build
-        shell: msys2 {0}
-        run: ./tools/build.sh
+        run: PLATFORM=${{ matrix.platform }} ./tools/build.sh
 
       - name: Upload Artifacts
         uses: actions/upload-artifact@v7
         with:
-          name: mingw-${{ matrix.arch }}
+          name: ${{ matrix.platform }}-${{ matrix.os.arch }}
           path: artifacts/*
 
   android:
