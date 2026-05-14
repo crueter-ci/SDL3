@@ -21,10 +21,7 @@ else
 	DEFAULT_ARCH=amd64
 fi
 
-: "${PLATFORM:?-- You must supply the PLATFORM environment variable.}"
 : "${ARCH:=$DEFAULT_ARCH}"
-: "${OUT_DIR:=$PWD/out}"
-: "${BUILD_DIR:=build}"
 
 if android; then
 	case "$ARCH" in
@@ -45,14 +42,15 @@ case "$PLATFORM" in
 esac
 
 case "$PLATFORM" in
-	linux|macos) EXTRA_CMAKE_FLAGS+=(-DCMAKE_INSTALL_LIBDIR=lib) ;;
+	linux) EXTRA_CMAKE_FLAGS+=(-DCMAKE_INSTALL_LIBDIR=lib) ;;
+	macos) EXTRA_CMAKE_FLAGS+=(-DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET") ;;
 	ios)
 		: "${IOS_TARGET:=iphoneos}"
 		EXTRA_CMAKE_FLAGS+=(
 			-DCMAKE_INSTALL_LIBDIR=lib
 			-DCMAKE_SYSTEM_NAME=iOS
 			-DCMAKE_OSX_SYSROOT="$IOS_TARGET"
-			-DCMAKE_OSX_DEPLOYMENT_TARGET=16.0)
+			-DCMAKE_OSX_DEPLOYMENT_TARGET="$MACOSX_DEPLOYMENT_TARGET")
 			;;
 	windows | mingw) ;;
 	android) EXTRA_CMAKE_FLAGS+=(

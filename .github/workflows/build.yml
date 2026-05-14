@@ -227,15 +227,18 @@ jobs:
         include:
           - platform: macos
             arch: universal
+            deployment_target: 11.0
 
           - platform: ios
             arch: aarch64
             ios_target: iphoneos
+            deployment_target: 16.0
 
     env:
       PLATFORM: ${{ matrix.platform }}
       ARCH: ${{ matrix.arch }}
       IOS_TARGET: ${{ matrix.ios_target }}
+      MACOSX_DEPLOYMENT_TARGET: ${{ matrix.deployment_target }}
 
     steps:
       - uses: actions/checkout@v6
