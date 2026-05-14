@@ -20,7 +20,7 @@ jobs:
       ARCH: ${{ matrix.arch }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: ilammy/msvc-dev-cmd@v1
         with:
@@ -31,7 +31,7 @@ jobs:
         run: PLATFORM=windows ./tools/build.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: windows-${{ matrix.arch }}
           path: artifacts/*
@@ -57,7 +57,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5.0.0
+        uses: actions/checkout@v6
 
       - name: Setup MSYS2
         id: msys2
@@ -75,7 +75,7 @@ jobs:
         run: ./tools/build.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: mingw-${{ matrix.arch }}
           path: artifacts/*
@@ -93,14 +93,14 @@ jobs:
       ARCH: ${{ matrix.arch }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build
         shell: bash
         run: ./tools/build.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-${{ matrix.arch }}
           path: artifacts/*
@@ -123,7 +123,7 @@ jobs:
       PLATFORM: linux
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Deps
         run: ./deps/linux.sh
@@ -132,7 +132,7 @@ jobs:
         run: ./tools/build.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: linux-${{ matrix.arch }}
           path: artifacts/*
@@ -164,7 +164,7 @@ jobs:
       ARCH: ${{ matrix.arch }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - name: Build (Solaris)
         if: matrix.platform == 'solaris'
@@ -213,7 +213,7 @@ jobs:
             bash -e ./tools/build.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.platform }}-${{ matrix.arch }}
           path: artifacts/*
@@ -238,7 +238,7 @@ jobs:
       IOS_TARGET: ${{ matrix.ios_target }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: recursive
 
@@ -246,7 +246,7 @@ jobs:
         run: ./tools/build.sh
 
       - name: Upload Artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ${{ matrix.platform }}-${{ matrix.arch }}
           path: artifacts/*
