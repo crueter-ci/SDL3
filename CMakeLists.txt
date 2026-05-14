@@ -43,8 +43,8 @@ else()
 endif()
 
 if (APPLE)
-    foreach(FRAMEWORK
-        AudioToolbox ForceFeedback GameController CoreHaptics CoreAudio)
+    foreach(FRAMEWORK AVFoundation AudioToolbox CoreAudio CoreHaptics
+        CoreMedia CoreVideo ForceFeedback GameController QuartzCore)
         find_library(${FRAMEWORK}_LIBRARY ${FRAMEWORK})
         target_link_libraries(SDL3 INTERFACE ${${FRAMEWORK}_LIBRARY})
     endforeacH()
