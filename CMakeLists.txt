@@ -54,4 +54,6 @@ add_library(SDL3::SDL3 ALIAS SDL3)
 
 if (CMAKE_SYSTEM_NAME MATCHES ".*FreeBSD.*")
     target_link_libraries(SDL3 INTERFACE usbhid inotify)
+elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
+    target_link_libraries(SDL3 INTERFACE bsd)
 endif()
