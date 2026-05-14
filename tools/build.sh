@@ -111,7 +111,7 @@ copy_build_artifacts() {
 
 	if android; then
 	    mkdir "$OUT_DIR"/lib "$OUT_DIR"/include
-		cp "build/android/obj/local/$ABI"/libSDL3* "$OUT_DIR"/lib
+		cp "build/android/lib/$ABI"/libSDL3* "$OUT_DIR"/lib
 		cp include/*.h "$OUT_DIR"/include
 		return
 	fi
