@@ -65,7 +65,7 @@ esac
 
 # cmake
 configure() {
-	echo "-- Configuring..."
+	_group "Configuring"
 
 	cmake -S . -B "$BUILD_DIR" \
 		-DSDL_WERROR=OFF \
@@ -77,30 +77,36 @@ configure() {
 		-G "Ninja" \
 		-DCMAKE_BUILD_TYPE=Release \
 		"${EXTRA_CMAKE_FLAGS[@]}"
+
+		_end
 }
 
 build() {
-	echo "-- Building..."
+	_group "Building"
 
 	cmake --build "$BUILD_DIR" --config Release --parallel
+
+	_end
 }
 
 strip_libs() {
-	echo "-- Stripping shared libraries..."
+	_group "Stripping shared libraries"
 
 	case "$PLATFORM" in
 		windows) ;;
 		*) find "$OUT_DIR" -name "*.$SHARED_SUFFIX" -exec strip {} \; ;;
 	esac
+
+	_end
 }
 
 ## Packaging ##
 copy_build_artifacts() {
-    echo "-- Copying artifacts..."
-
+    _group "Copying artifacts"
     cmake --install "$BUILD_DIR"
+	_end
 
-    echo "-- Cleaning..."
+    _group "Cleaning"
     rm -rf "$OUT_DIR"/lib/pkgconfig
     rm -rf "$OUT_DIR"/lib/cmake
     rm -rf "$OUT_DIR"/cmake
@@ -125,6 +131,8 @@ copy_build_artifacts() {
 	esac
 
 	rm -rf "${OUT_DIR:?}/bin"
+
+	_end
 }
 
 ## Cleanup ##
