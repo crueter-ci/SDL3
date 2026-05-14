@@ -73,6 +73,7 @@ configure() {
 		-DCMAKE_INSTALL_PREFIX="$OUT_DIR" \
 		-DSDL_SHARED=ON \
 		-DSDL_STATIC=ON \
+		-DSDL_X11_XTEST=OFF \
 		-G "Ninja" \
 		-DCMAKE_BUILD_TYPE=Release \
 		"${EXTRA_CMAKE_FLAGS[@]}"
