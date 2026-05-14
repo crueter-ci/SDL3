@@ -54,8 +54,4 @@ add_library(SDL3::SDL3 ALIAS SDL3)
 
 if (CMAKE_SYSTEM_NAME MATCHES ".*FreeBSD.*")
     target_link_libraries(SDL3 INTERFACE usbhid inotify)
-elseif(CMAKE_SYSTEM_NAME STREQUAL Linux)
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(LIBBSD REQUIRED libbsd)
-    target_link_libraries(SDL3 INTERFACE ${LIBBSD_LIBRARIES})
 endif()

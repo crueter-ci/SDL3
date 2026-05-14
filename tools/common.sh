@@ -84,6 +84,11 @@ extract() {
 		*.7z) 7z x "$ROOTDIR/$ARTIFACT" >/dev/null ;;
 	esac
 
+	# Linux should not use libbsd extensions
+	if [ "$PLATFORM" = linux ]; then
+		sed -i 's/ strlcat strlcpy//' "$DIRECTORY"/CMakeLists.txt
+	fi
+
 	_end
 }
 
