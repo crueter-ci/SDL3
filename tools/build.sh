@@ -40,7 +40,7 @@ case "$PLATFORM" in
 	openbsd) EXTRA_CMAKE_FLAGS=(-DCMAKE_C_FLAGS="-L/usr/local/lib") ;;
 	solaris)
 		export PKG_CONFIG_PATH=/usr/lib/64/pkgconfig
-		EXTRA_CMAKE_FLAGS=(-DSDL_HIDAPI=OFF) ;;
+		EXTRA_CMAKE_FLAGS=(-DSDL_HIDAPI=OFF -DSDL_X11_XCURSOR=OFF) ;;
 	macos) EXTRA_CMAKE_FLAGS=(-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0) ;;
 esac
 
@@ -76,7 +76,6 @@ configure() {
 		-DCMAKE_INSTALL_PREFIX="$OUT_DIR" \
 		-DSDL_SHARED=ON \
 		-DSDL_STATIC=ON \
-		-DSDL_X11_XTEST=OFF \
 		-G "Ninja" \
 		-DCMAKE_BUILD_TYPE=Release \
 		"${EXTRA_CMAKE_FLAGS[@]}"
@@ -93,7 +92,6 @@ strip_libs() {
 
 	case "$PLATFORM" in
 		windows) ;;
-		android) find "$OUT_DIR" -name "*.so" -exec llvm-strip --strip-all {} \; ;;
 		*) find "$OUT_DIR" -name "*.$SHARED_SUFFIX" -exec strip {} \; ;;
 	esac
 }
