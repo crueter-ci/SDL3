@@ -87,8 +87,6 @@ build() {
 
 		android_paths
 
-		sed -i 's/SDL3/SDL3 SDL3_static/' build-scripts/androidbuildlibs.sh
-
 		# TODO(crueter): Just use CMake
 		build-scripts/androidbuildlibs.sh -j"$(nproc)" APP_PLATFORM="$ANDROID_API" APP_ABI="$ABI"
 	else
