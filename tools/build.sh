@@ -55,6 +55,11 @@ case "$PLATFORM" in
 			-DCMAKE_OSX_DEPLOYMENT_TARGET=16.0)
 			;;
 	windows | mingw) ;;
+	android) EXTRA_CMAKE_FLAGS+=(
+		-DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake"
+		-DANDROID_ABI="$ABI"
+		-DANDROID_PLATFORM="android-$ANDROID_API"
+	) ;;
 	*) EXTRA_CMAKE_FLAGS+=(-DCMAKE_INSTALL_LIBDIR=lib -DSDL_IBUS=OFF -DSDL_WAYLAND=OFF -DSDL_PIPEWIRE=OFF -DSDL_ALSA=OFF -DSDL_LIBUDEV=OFF -DSDL_DBUS=OFF) ;;
 esac
 
@@ -62,8 +67,6 @@ esac
 
 # cmake
 configure() {
-	[ "$PLATFORM" = android ] && return
-
 	echo "-- Configuring..."
 
 	cmake -S . -B "$BUILD_DIR" \
@@ -82,16 +85,7 @@ configure() {
 build() {
 	echo "-- Building..."
 
-	if android; then
-		export PATH="$ANDROID_NDK_ROOT:$PATH"
-
-		android_paths
-
-		# TODO(crueter): Just use CMake
-		build-scripts/androidbuildlibs.sh -j"$(nproc)" APP_PLATFORM="$ANDROID_API" APP_ABI="$ABI"
-	else
-		cmake --build "$BUILD_DIR" --config Release --parallel
-	fi
+	cmake --build "$BUILD_DIR" --config Release --parallel
 }
 
 strip_libs() {
@@ -107,13 +101,6 @@ strip_libs() {
 ## Packaging ##
 copy_build_artifacts() {
     echo "-- Copying artifacts..."
-
-	if android; then
-	    mkdir "$OUT_DIR"/lib "$OUT_DIR"/include
-		cp "build/android/lib/$ABI"/libSDL3* "$OUT_DIR"/lib
-		cp -r include/SDL3 "$OUT_DIR"/include
-		return
-	fi
 
     cmake --install "$BUILD_DIR"
 
@@ -137,7 +124,7 @@ copy_build_artifacts() {
 			rm -rf "$OUT_DIR"/libdata
 			rm -rf "$OUT_DIR"/share
 			find "$OUT_DIR/lib" -type l -exec rm {} \;
-			mv "$OUT_DIR/lib"/*."${SHARED_SUFFIX}"* "$OUT_DIR/lib/libSDL3.${SHARED_SUFFIX}"
+			mv "$OUT_DIR/lib"/*."${SHARED_SUFFIX}"* "$OUT_DIR/lib/libSDL3.${SHARED_SUFFIX}" 2>/dev/null|| true
 			;;
 	esac
 
