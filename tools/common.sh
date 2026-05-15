@@ -87,6 +87,7 @@ extract() {
 	# Linux should not use libbsd extensions
 	if [ "$PLATFORM" = linux ]; then
 		sed -i 's/ strlcat strlcpy//' "$DIRECTORY"/CMakeLists.txt
+		sed -i 's/ wcslcat wcslcpy//' "$DIRECTORY"/CMakeLists.txt
 	fi
 
 	_end
