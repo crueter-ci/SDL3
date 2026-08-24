@@ -17,36 +17,27 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - name: Download
         uses: actions/download-artifact@v8
+        with:
+          merge-multiple: true
 
       - name: Get Version
-        run: |
-          . ./tools/vars.sh
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Delete Previous Release
-        run: |
-          gh release delete "v${{ env.VERSION }}" --repo "${{ github.repository }}" --cleanup-tag -y
-          sleep 5
-        env:
-          GH_TOKEN: "${{ github.token }}"
-        continue-on-error: true
+        run: echo "VERSION=$(cat VERSION)" >> "$GITHUB_ENV"
 
       - name: Generate Changelog
         run: |
           ./tools/changelog.sh > changelog.md
 
       - name: Release
-        uses: softprops/action-gh-release@v2.3.2
+        uses: softprops/action-gh-release@v3
         with:
           body_path: ./changelog.md
-
           name: SDL3 ${{ env.VERSION }}
-          tag_name: v${{ env.VERSION }}
+          tag_name: ${{ env.VERSION }}
           files: |
-            */*.tar.zst*
+            *.tar.zst*
 
           make_latest: true
