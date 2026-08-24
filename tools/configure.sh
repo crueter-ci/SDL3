@@ -50,7 +50,7 @@ configure() {
 		set -- "$@" -DCMAKE_C_COMPILER_LAUNCHER="${SCCACHE_PATH}" -DCMAKE_CXX_COMPILER_LAUNCHER="${SCCACHE_PATH}"
 	fi
 
-	cmake -S . -B build \
+	cmake -S . -B ../build \
 		-DSDL_WERROR=OFF \
 		-DSDL_TEST_LIBRARY=OFF \
 		-DSDL_VENDOR_INFO="crueter's CI" \

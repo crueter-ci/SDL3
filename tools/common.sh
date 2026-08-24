@@ -98,6 +98,10 @@ macos() {
 	[ "$PLATFORM" = macos ]
 }
 
+ios() {
+	[ "$PLATFORM" = ios ]
+}
+
 msvc() {
 	[ "$PLATFORM" = windows ]
 }
