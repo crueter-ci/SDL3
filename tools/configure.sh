@@ -35,7 +35,7 @@ configure() {
 	if android; then
 		case "$ARCH" in
 			amd64) ABI=x86_64 ;;
-			aarch64) ABI=arm64 ;;
+			aarch64) ABI=arm64-v8a ;;
 		esac
 
 		set -- "$@" -DCMAKE_TOOLCHAIN_FILE="$ANDROID_NDK_ROOT/build/cmake/android.toolchain.cmake" \

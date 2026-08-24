@@ -107,10 +107,6 @@ jobs:
         if: matrix.platform == 'linux'
         run: ./deps/linux.sh
 
-      - name: Install Dependencies (Android)
-        if: matrix.platform == 'android'
-        run: ./deps/android.sh
-
       # Download + extract
       - name: Download
         uses: actions/download-artifact@v8
