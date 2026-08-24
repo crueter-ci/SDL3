@@ -82,7 +82,7 @@ jobs:
           install: >-
             git make tar curl
           pacboy: >-
-            toolchain:p
+            toolchain:p cmake:p ninja:p
 
       - name: Setup MSVC
         if: matrix.platform == 'windows'
@@ -106,6 +106,10 @@ jobs:
       - name: Install Dependencies (Linux)
         if: matrix.platform == 'linux'
         run: ./deps/linux.sh
+
+      - name: Install Dependencies (Android)
+        if: matrix.platform == 'android'
+        run: ./deps/android.sh
 
       # Download + extract
       - name: Download
