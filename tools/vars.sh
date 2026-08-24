@@ -2,9 +2,11 @@
 
 ## Common variables ##
 
+# TAG/COMMIT must be set.
+
 # In some projects you will want to fetch latest from gh/fj api
-VERSION="3.4.8"
-export COMMIT="d57c3b685c434d2ee0fa3d258f7e165b6e8d0cf6"
+# TIMESTAMP="$(date +%s)"
+# export TIMESTAMP
 export PRETTY_NAME="SDL3"
 export FILENAME="SDL3"
 export REPO="libsdl-org/SDL"
@@ -12,5 +14,13 @@ export DIRECTORY="SDL-$COMMIT"
 export ARTIFACT="$COMMIT.tar.gz"
 export DOWNLOAD_URL="https://github.com/$REPO/archive/$ARTIFACT"
 
+if [ -f TIMESTAMP ]; then
+	TIMESTAMP="$(cat TIMESTAMP)"
+else
+	TIMESTAMP=0
+fi
+
+export TIMESTAMP
+
 SHORTSHA=$(echo "$COMMIT" | cut -c1-10)
-export VERSION="$VERSION-$SHORTSHA"
+export VERSION="$TAG-$TIMESTAMP-$SHORTSHA"
