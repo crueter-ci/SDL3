@@ -4,8 +4,9 @@ on:
   workflow_call:
 
 env:
-  TAG: 3.4.14
-  COMMIT: 147a8ee32dbf9ac02f3794964490687b6bbda1bc
+  ARTIFACT: unset
+  DIRECTORY: unset
+  SCCACHE_GHA_ENABLED: "true"
 
 jobs:
   download:
@@ -41,7 +42,9 @@ jobs:
 
       - name: Generate Build Matrix
         id: matrix
-        run: echo "matrix=$(./tools/matrix.sh)" >> "$GITHUB_OUTPUT"
+        run: |
+          echo "matrix=$(./tools/matrix.sh)" >> "$GITHUB_OUTPUT"
+          tools/matrix.sh
 
   build:
     needs: [download]
@@ -51,6 +54,8 @@ jobs:
       fail-fast: false
       matrix:
         include: ${{ fromJson(needs.download.outputs.matrix) }}
+
+    container: ${{ matrix.container }}
 
     defaults:
       run:
@@ -63,6 +68,8 @@ jobs:
 
     env:
       BASH_SHELL: ${{ matrix.platform == 'mingw' && 'msys2 {0}' || 'bash' }}
+      # change this if you need jom, ninja, cmake etc
+      MAKE: ninja
 
     steps:
       - name: Checkout
@@ -80,7 +87,7 @@ jobs:
           msystem: ${{ matrix.arch == 'amd64' && 'ucrt64' || 'clangarm64' }}
           update: true
           install: >-
-            git make tar curl
+            git tar curl
           pacboy: >-
             toolchain:p cmake:p ninja:p
 
@@ -103,9 +110,9 @@ jobs:
 
           mkdir -p out
 
-      - name: Install Dependencies (Linux)
-        if: matrix.platform == 'linux'
-        run: ./deps/linux.sh
+      - name: Install Dependencies (Linux/macOS)
+        if: matrix.platform == 'linux' || matrix.platform == 'macos'
+        run: ./deps/${{ matrix.platform }}.sh
 
       # Download + extract
       - name: Download
@@ -129,27 +136,16 @@ jobs:
       - name: Extract
         run: tar xf ${{ env.ARTIFACT}}
 
-      - name: Configure (Windows)
-        if: matrix.platform == 'windows'
-        shell: bash
-        run: ./tools/configure.sh
-
-      - name: Configure (UNIX)
-        if: matrix.platform != 'windows'
-        run: ./tools/configure.sh
+      # configure
+      - name: Configure
+        run: bash ./tools/configure.sh
 
       - name: Build
-        run: cmake --build build --config Release -j4
+        run: ${{ env.MAKE }} -j8
+        working-directory: ${{ env.DIRECTORY }}
 
-      # TODO(crueter): Find a way to not need this
-      - name: Package (Windows)
-        if: matrix.platform == 'windows'
-        shell: bash
-        run: ./tools/package.sh
-
-      - name: Package (UNIX)
-        if: matrix.platform != 'windows'
-        run: ./tools/package.sh
+      - name: Package
+        run: bash ./tools/package.sh
 
       - name: Upload Tarball
         uses: actions/upload-artifact@v7

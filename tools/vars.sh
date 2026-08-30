@@ -2,11 +2,8 @@
 
 ## Common variables ##
 
-# TAG/COMMIT must be set.
-
-# In some projects you will want to fetch latest from gh/fj api
-# TIMESTAMP="$(date +%s)"
-# export TIMESTAMP
+export TAG=3.4.14
+export COMMIT=147a8ee32dbf9ac02f3794964490687b6bbda1bc
 export PRETTY_NAME="SDL3"
 export FILENAME="SDL3"
 export REPO="libsdl-org/SDL"
@@ -17,7 +14,8 @@ export DOWNLOAD_URL="https://github.com/$REPO/archive/$ARTIFACT"
 if [ -f TIMESTAMP ]; then
 	TIMESTAMP="$(cat TIMESTAMP)"
 else
-	TIMESTAMP=0
+	TIMESTAMP=$(date +"%s")
+	echo "$TIMESTAMP" > TIMESTAMP
 fi
 
 export TIMESTAMP
