@@ -110,8 +110,8 @@ jobs:
 
           mkdir -p out
 
-      - name: Install Dependencies (Linux/macOS)
-        if: matrix.platform == 'linux' || matrix.platform == 'macos'
+      - name: Install Dependencies (Linux)
+        if: matrix.platform == 'linux'
         run: ./deps/${{ matrix.platform }}.sh
 
       # Download + extract
@@ -142,7 +142,7 @@ jobs:
 
       - name: Build
         run: ${{ env.MAKE }} -j8
-        working-directory: ${{ env.DIRECTORY }}
+        working-directory: build
 
       - name: Package
         run: bash ./tools/package.sh
