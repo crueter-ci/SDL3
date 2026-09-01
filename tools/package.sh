@@ -33,6 +33,10 @@ copy_build_artifacts() {
 			;;
 	esac
 
+	if android; then
+		cp -r "$DIRECTORY"/android-project/app/src/main/java out
+	fi
+
 	rm -rf out/bin
 	_end
 }
